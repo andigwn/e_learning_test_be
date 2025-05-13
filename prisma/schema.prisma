@@ -1,0 +1,344 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        Int     @id @default(autoincrement())
+  role_name String  @db.VarChar(30)
+  users     Users[]
+
+  @@map("role")
+}
+
+model Users {
+  id_users Int     @id @default(autoincrement())
+  username String  @db.VarChar(100)
+  password String  @db.VarChar(255)
+  token    String? @db.VarChar(500)
+  id_role  Int
+  role     Role   @relation(fields: [id_role], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  admin Admin[]
+  guru Guru[]
+  siswa Siswa[]
+  diskusi Diskusi[]
+  jurusan Jurusan[]
+  log_aktivitas LogAktivitas[]
+  notifikasi Notifikasi[]
+
+
+  @@map("users")
+
+}
+
+enum JenisKelamin {
+  PRIA @map("laki-laki")
+  PEREMPUAN @map("perempuan")
+}
+
+model Admin {
+  id_admin Int @id @default(autoincrement())
+  id_users Int
+  nip Int @db.Int
+  nama String @db.VarChar(100)
+  tempat String @db.Text
+  tanggal_lahir DateTime @db.DateTime
+  status_pegawai String @db.VarChar(100)
+  jenis_ptk String @db.VarChar(100)
+  alamat String @db.VarChar(500)
+  kode_pos Int @db.Int
+  pangkat_golongan String @db.VarChar(20)
+  no_hp String @db.VarChar(15)
+  jenis_kelamin JenisKelamin
+  image String @db.VarChar(255)
+  mata_pelajaran MataPelajaran[]
+
+  users Users @relation(fields: [id_users], references: [id_users], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("admin")
+}
+
+model Guru {
+  id_guru Int @id @default(autoincrement())
+  id_users Int
+  nip Int @db.Int
+  nama String @db.VarChar(100)
+  no_hp String @db.VarChar(15)
+  tempat String @db.Text
+  tanggal_lahir DateTime @db.DateTime
+  status_pegawai String @db.VarChar(100)
+  pangkat_golongan String @db.VarChar(20)
+  alamat String @db.VarChar(500)
+  kode_pos Int @db.Int
+  jenis_kelamin JenisKelamin
+  image String @db.VarChar(255)
+  users Users @relation(fields: [id_users], references: [id_users], onDelete: Cascade, onUpdate: Cascade)
+
+  jadwal Jadwal[]
+  materi_pelajaran MateriPelajaran[]
+  tugas Tugas[]
+  @@map("guru")
+}
+
+model Jurusan {
+  kode_jurusan String @id @db.VarChar(25)
+  id_users Int
+  nama_jurusan String @db.VarChar(50)
+  siswa Siswa[]
+  users Users @relation(fields: [id_users], references: [id_users], onDelete:Cascade, onUpdate:Cascade)
+
+  @@map("jurusan")
+}
+model Ruangan {
+  id_ruangan Int @id @default(autoincrement())
+  nama_ruangan String @db.VarChar(20)
+  kode_kelas String @db.VarChar(11)
+
+  jadwal Jadwal[]
+  siswa Siswa[]
+
+  kelas Kelas @relation(fields: [kode_kelas], references: [kode_kelas], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("ruangan")
+}
+
+model Siswa {
+  id_siswa Int @id @default(autoincrement())
+  id_users Int 
+  nama_jurusan String @db.VarChar(25)
+  nis Int @db.Int
+  nama_siswa String @db.VarChar(100)
+  tempat String @db.Text
+  tanggal_lahir DateTime @db.DateTime
+  rt Int? @db.Int
+  rw Int? @db.Int
+  dusun String? @db.VarChar(100)
+  kelurahan String @db.VarChar(100)
+  kecamatan String @db.VarChar(100)
+  kode_pos Int? @db.Int
+  no_hp String @db.VarChar(15)
+  alamat String @db.VarChar(500)
+  rombel Int
+  jenis_kelamin JenisKelamin
+  image String @db.VarChar(255)
+  absensi Absensi[]
+  nilai Nilai[]
+  pengumpulan_tugas PengumpulanTugas[]
+
+  users Users @relation(fields: [id_users], references:[id_users], onDelete:Cascade, onUpdate:Cascade)
+  jurusan Jurusan @relation(fields: [nama_jurusan], references:[kode_jurusan], onDelete:Cascade, onUpdate:Cascade)
+  ruangan Ruangan @relation(fields: [rombel], references: [id_ruangan], onDelete:Cascade, onUpdate: Cascade)
+  @@map("siswa")
+
+}
+
+model MataPelajaran {
+  id_mapel Int @id @default(autoincrement())
+  id_admin Int
+  nama_mapel String @db.VarChar(50)
+  jadwal Jadwal[]
+  materi_pelajaran MateriPelajaran[]
+  nilai Nilai[]
+  tugas Tugas[]
+  admin Admin @relation(fields: [id_admin], references: [id_admin], onDelete: Cascade, onUpdate: Cascade)
+  @@map("mata_pelajaran")
+}
+
+
+
+model Kelas {
+  kode_kelas String @id @db.VarChar(11)
+  nama_kelas String @db.VarChar(50)
+  
+  jadwal Jadwal[]
+  diskusi Diskusi[]
+  tugas Tugas[]
+  ruangan Ruangan[]
+
+  @@map("kelas")
+}
+enum Hari {
+  Senin @map("Senin")
+  Selasa @map("Selasa")
+  Rabu @map("Rabu")
+  Kamis @map("Kamis")
+  Jumat @map("Jumat")
+  Sabtu @map("Sabtu")
+  Minggu @map("Minggu")
+}
+
+enum Tipe {
+  MENGAJAR @map("mengajar")
+  PELAJARAN @map("pelajaran")
+}
+
+enum Semester {
+  GANJIL @map("Ganjil")
+  GENAP @map("Genap")
+}
+
+enum Status {
+  AKTIF @map("aktif")
+  NONAKTIF @map("nonaktif")
+}
+
+model Jadwal {
+  id_jadwal Int @id @default(autoincrement())
+  id_mapel Int
+  id_guru Int
+  kode_kelas String @db.VarChar(11)
+  id_ruangan Int
+  hari Hari
+  tipe Tipe
+  jam_mulai DateTime @db.Time
+  jam_selesai DateTime @db.Time
+  semester Semester
+  tahun_ajaran String @db.VarChar(9)
+  status Status
+
+  absensi Absensi[]
+
+  mapel MataPelajaran @relation(fields: [id_mapel], references: [id_mapel], onDelete: Cascade, onUpdate: Cascade)
+  guru Guru @relation(fields: [id_guru], references: [id_guru], onDelete: Cascade, onUpdate: Cascade)
+  kelas Kelas @relation(fields: [kode_kelas], references: [kode_kelas], onDelete: Cascade, onUpdate: Cascade)
+  ruangan Ruangan @relation(fields: [id_ruangan], references: [id_ruangan], onDelete: Cascade, onUpdate: Cascade)
+  
+
+  @@map("jadwal")
+}
+
+enum StatusKehadiran {
+  HADIR @map("hadir")
+  IZIN @map("izin")
+  SAKIT @map("sakit")
+  ALFA @map("alfa")
+}
+
+model Absensi {
+  id_absensi Int @id @default(autoincrement())
+  id_siswa Int
+  id_jadwal Int 
+  tanggal DateTime @db.Date
+  status_kehadiran StatusKehadiran
+  catatan String? @db.Text
+
+  siswa Siswa @relation(fields: [id_siswa], references: [id_siswa], onDelete: Cascade, onUpdate: Cascade)
+  jadwal Jadwal @relation(fields: [id_jadwal], references: [id_jadwal], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("absensi")
+
+}
+
+model Diskusi {
+  id_diskusi Int @id @default(autoincrement())
+  kode_kelas String @db.VarChar(11)
+  pengirim Int
+  judul String @db.VarChar(100)
+  konten String @db.Text
+  tanggal_post DateTime @db.DateTime
+
+  kelas Kelas @relation(fields: [kode_kelas], references: [kode_kelas], onDelete: Cascade, onUpdate: Cascade)
+  users Users @relation(fields: [pengirim], references: [id_users], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("diskusi")
+}
+
+model LogAktivitas {
+  id_log Int @id @default(autoincrement())
+  id_users Int
+  aksi String @db.VarChar(50)
+  deskripsi String @db.Text
+  waktu DateTime @db.DateTime
+
+   users Users @relation(fields: [id_users], references: [id_users], onDelete: Cascade, onUpdate: Cascade)
+
+   @@map("log_aktivitas")
+
+}
+
+enum JenisMateri{
+  FILE @map("file")
+  VIDEO @map("video")
+  LINK @map("link")
+}
+
+model MateriPelajaran {
+  id_materi Int @id @default(autoincrement())
+  id_mapel Int
+  id_guru Int
+  judul String @db.VarChar(100)
+  deskripsi String @db.Text
+  jenis JenisMateri
+  path_file String @db.VarChar(255)
+  tanggal_upload DateTime @db.DateTime
+
+  mapel MataPelajaran @relation(fields: [id_mapel], references: [id_mapel], onDelete: Cascade, onUpdate: Cascade)
+  guru Guru @relation(fields: [id_guru], references: [id_guru], onDelete: Cascade, onUpdate: Cascade)
+  @@map("materi_pelajaran")
+}
+
+enum JenisNilai{
+  TUGAS @map("tugas")
+  UTS 
+  UAS
+  PRAKTIK @map("praktik")
+}
+model Nilai {
+  id_nilai Int @id @default(autoincrement())
+  id_siswa Int
+  id_mapel Int
+  jenis_nilai JenisNilai
+  nilai Int @db.Int
+  semester Semester
+  tahun_ajaran String @db.VarChar(9)
+
+  siswa Siswa @relation(fields: [id_siswa], references: [id_siswa], onDelete: Cascade, onUpdate: Cascade)
+  mapel MataPelajaran @relation(fields: [id_mapel], references: [id_mapel], onDelete: Cascade, onUpdate: Cascade)
+  @@map("nilai")
+}
+
+model Notifikasi {
+  id_notifikasi Int @id @default(autoincrement())
+  id_users Int
+  pesan String @db.Text
+  dibaca Boolean? @db.TinyInt()
+  link String @db.VarChar(255)
+  waktu DateTime @db.DateTime
+
+  users Users @relation(fields: [id_users], references: [id_users], onDelete: Cascade, onUpdate: Cascade)
+  @@map("notifikasi")
+}
+
+model Tugas {
+  id_tugas Int @id @default(autoincrement())
+  id_mapel Int
+  id_guru Int 
+  kode_kelas String @db.VarChar(11)
+  judul String @db.VarChar(100)
+  deskripsi String @db.Text
+  deadline DateTime @db.DateTime
+  file_tugas String @db.VarChar(255)
+  pengumpulan_tugas PengumpulanTugas[]
+
+  mapel MataPelajaran @relation(fields: [id_mapel], references: [id_mapel], onDelete: Cascade, onUpdate: Cascade)
+  guru Guru @relation(fields: [id_guru], references: [id_guru], onDelete: Cascade, onUpdate: Cascade)
+  kelas Kelas @relation(fields: [kode_kelas], references: [kode_kelas], onDelete: Cascade, onUpdate: Cascade)
+  @@map("tugas")
+}
+
+model PengumpulanTugas {
+  id_pengumpulan Int @id @default(autoincrement())
+  id_tugas Int
+  id_siswa Int 
+  file_jawaban String @db.VarChar(255)
+  nilai Int @db.Int
+  tanggal_kumpul DateTime @db.DateTime
+
+  tugas Tugas @relation(fields: [id_tugas], references: [id_tugas], onDelete:Cascade, onUpdate: Cascade)
+  siswa Siswa @relation(fields: [id_siswa], references: [id_siswa], onDelete:Cascade, onUpdate: Cascade)
+  @@map("pengumpulan_tugas")
+}

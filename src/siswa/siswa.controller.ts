@@ -84,7 +84,8 @@ export class SiswaController {
     ):Promise<WebResponse<boolean>> {
         await this.siswaService.remove(user, siswaId)
         return {
-            data:true
+            data: true,
+            message: "Delete Siswa Success"
         }
     }
 }

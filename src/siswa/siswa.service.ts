@@ -49,7 +49,7 @@ export class SiswaService {
         return plainToInstance (SiswaResponse, siswa)
     }
 
-    async chechkSiswaMustExists ( siswaId: number){
+    async chechkSiswaMustExists (siswaId: number){
         const siswa = await this.prismaService.siswa.findFirst({
             where: {
                 id_siswa: siswaId,
@@ -148,9 +148,6 @@ export class SiswaService {
         if (!user || !user.token) {
             throw new HttpException("Unauthorized", 401);
         }
-        // if (![1, 4].includes(user.id_role)) {
-        //     throw new HttpException("Forbidden", 403)
-        // }
         if (!siswa || siswa.length === 0) {
             throw new HttpException("Siswa not found", 404)
         }
@@ -159,7 +156,7 @@ export class SiswaService {
     async update(user: Users, request: UpdateSiswaRequest): Promise<SiswaResponse>{
         this.logger.debug(`SiswaService.update(${JSON.stringify(user)}, ${JSON.stringify(request)})`)
         const updateRequest = await this.validationService.validate(SiswaValidation.UPDATE, request)
-        let siswa = await this.chechkSiswaMustExists( updateRequest.id_siswa)
+        let siswa = await this.chechkSiswaMustExists(updateRequest.id_siswa)
         if (![1, 4].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }

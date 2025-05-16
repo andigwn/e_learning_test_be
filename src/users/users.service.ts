@@ -97,7 +97,7 @@ export class UsersService {
             where: {
                 id_users: user.id_users
             },
-            data: user
+            data: userUpadate
         });
         return {
             id_users: result.id_users,

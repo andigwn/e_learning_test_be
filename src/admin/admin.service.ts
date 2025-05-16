@@ -26,7 +26,7 @@ export class AdminService {
         if (totalAdminWithSameName !== 0) {
             throw new HttpException("Nama Already Exist", 400)
         }
-        if (![1,4].includes(user.id_role)) {
+        if (![1,2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const prismaData  = {
@@ -59,7 +59,7 @@ export class AdminService {
                 id_admin: adminId,
             }
         });
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         if (!admin){
@@ -70,7 +70,7 @@ export class AdminService {
     async getAllAdmin(user: Users): Promise<AdminResponse[]>{
         this.logger.debug(`AdminService.getAllAdmin(${JSON.stringify(user)})`)
         const admin = await this.prismaService.admin.findMany({})
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         if (!admin || admin.length === 0) {
@@ -86,7 +86,7 @@ export class AdminService {
                 id_users: user.id_users
             }
         });
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         if (!admin || admin.length === 0) {
@@ -122,7 +122,7 @@ export class AdminService {
     async remove(user: Users, adminId: number):Promise<AdminResponse>{
         this.logger.debug(`AdminService.delete(${JSON.stringify(user)} ${JSON.stringify(adminId)})`)
         await this.checkAdminMustExists(adminId);
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const admin = await this.prismaService.admin.delete({

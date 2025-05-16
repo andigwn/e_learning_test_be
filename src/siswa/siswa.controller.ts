@@ -11,9 +11,9 @@ export class SiswaController {
     constructor(private siswaService: SiswaService){}
     @Get()
     @HttpCode(200)
-    @Roles(1,3, 4)
+    @Roles(1,2, 4)
     async getAllSiswa(
-        @Auth(['admin','siswa','superadmin']) user: Users
+        @Auth(['superadmin','admin','siswa']) user: Users
     ):Promise<WebResponse<SiswaResponse[]>> {
         const result = await this.siswaService.getAllSiswa(user)
         return {
@@ -23,9 +23,9 @@ export class SiswaController {
     }
     @Get('/current')
     @HttpCode(200)
-    @Roles(1,3, 4)
+    @Roles(1,2,4)
     async getSiswaCurrent(
-        @Auth(['admin','siswa','superadmin']) user: Users
+        @Auth(['superadmin','admin','siswa']) user: Users
     ):Promise<WebResponse<SiswaResponse[]>> {
         const result = await this.siswaService.getSiswaCurrent(user)
         return {
@@ -36,9 +36,9 @@ export class SiswaController {
 
     @Post('/create')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async create(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Body() request: CreateSiswaRequest
     ):Promise<WebResponse<SiswaResponse>> {
         const result = await this.siswaService.create(user, request)
@@ -49,9 +49,9 @@ export class SiswaController {
     }
     @Get('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 3, 4)
+    @Roles(1, 2, 4)
     async get(
-        @Auth(['admin', 'siswa','superadmin']) user: Users,
+        @Auth(['superadmin','admin', 'siswa']) user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number
     ):Promise<WebResponse<SiswaResponse>> {
         const result = await this.siswaService.get(user, siswaId)
@@ -62,9 +62,9 @@ export class SiswaController {
     }
     @Put('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async update(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number,
         @Body() request: UpdateSiswaRequest
     ):Promise<WebResponse<SiswaResponse>> {
@@ -77,9 +77,9 @@ export class SiswaController {
     }
     @Delete('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async remove(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number
     ):Promise<WebResponse<boolean>> {
         await this.siswaService.remove(user, siswaId)

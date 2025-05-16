@@ -47,7 +47,7 @@ export class MapelService {
     async get(user: Users, mapelId: number): Promise<MapelResponse>{
         this.logger.debug(`MapelService.get(${JSON.stringify(user)} ${JSON.stringify(mapelId)})`);
         const mapel = await this.checkMapelMustExists(mapelId)
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         return plainToInstance(MapelResponse, mapel);
@@ -68,7 +68,7 @@ export class MapelService {
         this.logger.debug(`MapelService.update(${JSON.stringify(user)} ${JSON.stringify(request)})`)
         const updateRequest = await this.validationService.validate(MapelValidation.UPDATE,request)
         let mapel = await this.checkMapelMustExists(updateRequest.id_mapel)
-        if (![1,4].includes(user.id_role)) {
+        if (![1,2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const updateData = {
@@ -88,7 +88,7 @@ export class MapelService {
     }
     async remove(user: Users, mapelId: number): Promise<MapelResponse>{
         await this.checkMapelMustExists(mapelId)
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const mapel = await this.prismaService.mataPelajaran.delete({

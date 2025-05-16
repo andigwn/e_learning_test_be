@@ -11,6 +11,7 @@ export class UsersValidation {
         password: z.string().min(8).max(255),
     })
     static readonly UPDATE: ZodType = z.object({
+        id_role: z.number().int().optional(),
         password: z.string().min(8).max(255).optional(),
     })
 }

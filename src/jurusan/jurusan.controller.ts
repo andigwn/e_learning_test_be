@@ -13,9 +13,9 @@ export class JurusanController {
     ){}
     @Post('/create')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1, 2)
     async create(
-        @Auth(['admin', 'superadmin']) user: Users,
+        @Auth(['superadmin', 'admin']) user: Users,
         @Body() request: JurusanCreateRequest
     ): Promise<WebResponse<JurusanResponse>>{
         const result = await this.jurusanService.create(user, request)
@@ -26,9 +26,9 @@ export class JurusanController {
     }
     @Get('/:kodeJurusan')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async get(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin', 'admin']) user: Users,
         @Param('kodeJurusan') kodeJurusan : string
     ):Promise<WebResponse<JurusanResponse>> {
         const result = await this.jurusanService.get(user, kodeJurusan)
@@ -39,9 +39,9 @@ export class JurusanController {
     }
     @Get()
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2, 3, 4)
     async getAll(
-        @Auth(['admin','superadmin']) user: Users
+        @Auth(['superadmin', 'admin', 'siswa', 'guru']) user: Users
     ):Promise<WebResponse<JurusanResponse[]>> {
         const result = await this.jurusanService.getAll(user)
         return {
@@ -51,9 +51,9 @@ export class JurusanController {
     }
     @Put('/:kodeJurusan')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async update(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin', 'admin']) user: Users,
         @Param('kodeJurusan') kodeJurusan : string,
         @Body() request: JurusanUpdateRequest
     ):Promise<WebResponse<JurusanResponse>> {
@@ -66,9 +66,9 @@ export class JurusanController {
     }
     @Delete('/:kodeJurusan')
     @HttpCode(200)
-    @Roles(1, 4)
+    @Roles(1, 2)
     async delete(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin', 'admin']) user: Users,
         @Param('kodeJurusan') kodeJurusan : string
     ):Promise<WebResponse<boolean>> {
          await this.jurusanService.remove(user, kodeJurusan)

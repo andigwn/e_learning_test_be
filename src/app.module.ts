@@ -10,9 +10,11 @@ import { RuanganModule } from './ruangan/ruangan.module';
 import { AbsensiModule } from './absensi/absensi.module';
 import { SiswaModule } from './siswa/siswa.module';
 import { AdminModule } from './admin/admin.module';
+import { JadwalModule } from './jadwal/jadwal.module';
+import { GuruModule } from './guru/guru.module';
 
 @Module({
-  imports: [CommonModule, UsersModule, DashboardModule, JurusanModule, MapelModule, RuanganModule, AbsensiModule, SiswaModule, AdminModule],
+  imports: [CommonModule, UsersModule, DashboardModule, JurusanModule, MapelModule, RuanganModule, AbsensiModule, SiswaModule, AdminModule, JadwalModule, GuruModule],
   controllers: [AppController],
   providers: [AppService],
 })

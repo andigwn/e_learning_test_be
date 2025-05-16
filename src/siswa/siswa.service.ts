@@ -26,7 +26,7 @@ export class SiswaService {
             id_users: user.id_users,
             tanggal_lahir: new Date(request.tanggal_lahir)
           };
-          if (![1, 4].includes(user.id_role)) {
+          if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
     
@@ -118,7 +118,7 @@ export class SiswaService {
         if (!user || !user.token) {
             throw new HttpException("Unauthorized", 401);
         }
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         if (!siswa || siswa.length === 0) {
@@ -157,7 +157,7 @@ export class SiswaService {
         this.logger.debug(`SiswaService.update(${JSON.stringify(user)}, ${JSON.stringify(request)})`)
         const updateRequest = await this.validationService.validate(SiswaValidation.UPDATE, request)
         let siswa = await this.chechkSiswaMustExists(updateRequest.id_siswa)
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const updateData = {
@@ -189,7 +189,7 @@ export class SiswaService {
     }
     async remove(user: Users, siswaId: number): Promise<SiswaResponse> {
         await this.chechkSiswaMustExists(siswaId);
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const siswa = await this.prismaService.siswa.delete({

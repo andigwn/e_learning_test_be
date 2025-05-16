@@ -14,9 +14,9 @@ export class MapelController {
 
     @Post('/create')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async create(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Body() request: MapelCreateRequest,
     ): Promise<WebResponse<MapelResponse>>{
         const result = await this.mapelService.create(user, request);
@@ -27,9 +27,9 @@ export class MapelController {
     }
     @Get('/:mapelId')
     @HttpCode(200)
-    @Roles(1,3,4)
+    @Roles(1,2,4)
     async get(
-        @Auth(['admin','siswa','superadmin']) user: Users,
+        @Auth(['superadmin','admin','siswa']) user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number
     ):Promise<WebResponse<MapelResponse>>{
         
@@ -41,9 +41,9 @@ export class MapelController {
     }
     @Get()
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async getAllMapel(
-        @Auth(['admin', 'superadmin']) user: Users
+        @Auth(['superadmin','admin']) user: Users
     ): Promise<WebResponse<MapelResponse[]>>{
         const result = await this.mapelService.getAllMapel(user)
         return {
@@ -53,9 +53,9 @@ export class MapelController {
     }
     @Put('/:mapelId')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async update(
-        @Auth(['admin', 'superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number,
         @Body() request: MapelUpdateRequest,
     ): Promise<WebResponse<MapelResponse>>{
@@ -68,9 +68,9 @@ export class MapelController {
     }
     @Delete('/:mapelId')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async remove(
-        @Auth(['admin', 'superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number
     ): Promise<WebResponse<boolean>>{
         await this.mapelService.remove(user, mapelId)

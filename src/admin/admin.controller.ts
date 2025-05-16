@@ -14,9 +14,9 @@ export class AdminController {
 
     @Post('/create')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async create(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Body() request: CreateAdminRequest
     ): Promise<WebResponse<AdminResponse>>{
         const result = await this.adminService.create(user,request)
@@ -27,9 +27,9 @@ export class AdminController {
     }
     @Get('/:adminId')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async get(
-        @Auth(['admin','superadmin']) user: Users,
+        @Auth(['superadmin','admin']) user: Users,
         @Param('adminId',ParseIntPipe) adminId: number
     ):Promise<WebResponse<AdminResponse>>{
         const result = await this.adminService.get(user,adminId)
@@ -40,9 +40,9 @@ export class AdminController {
     }
     @Get()
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async getAllAdmin(
-        @Auth(['admin','superadmin']) user: Users
+        @Auth(['superadmin','admin']) user: Users
     ): Promise<WebResponse<AdminResponse[]>>{
         const result = await this.adminService.getAllAdmin(user)
         return{
@@ -52,9 +52,9 @@ export class AdminController {
     }
     @Get('/current')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async getAdminCurrent(
-        @Auth(['admin','superadmin']) user: Users
+        @Auth(['superadmin','admin']) user: Users
     ): Promise<WebResponse<AdminResponse[]>>{
         const result = await this.adminService.getAdminCurrent(user)
         return{
@@ -64,9 +64,9 @@ export class AdminController {
     }
     @Put('/:adminId')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async update(
-        @Auth(['admin', 'superadmin']) user: Users,
+        @Auth(['superadmin','admin',]) user: Users,
         @Param('adminId', ParseIntPipe) adminId: number,
         @Body() request: UpdateAdminRequest
     ): Promise<WebResponse<AdminResponse>>{
@@ -79,9 +79,9 @@ export class AdminController {
     }
     @Delete('/:adminId')
     @HttpCode(200)
-    @Roles(1,4)
+    @Roles(1,2)
     async delete(
-        @Auth(['admin', 'superadmin']) user: Users,
+        @Auth(['superadmin','admin',]) user: Users,
         @Param('adminId', ParseIntPipe) adminId: number
     ): Promise<WebResponse<boolean>>{
         await this.adminService.remove(user, adminId)

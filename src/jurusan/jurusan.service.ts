@@ -34,7 +34,7 @@ export class JurusanService {
             ...createRequest,
             id_users: user.id_users
         }
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const jurusan = await this.prismaService.jurusan.create({
@@ -52,7 +52,7 @@ export class JurusanService {
         if (!jurusan) {
             throw new HttpException("Jurusan not found", 404)
         }
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         return plainToInstance (JurusanResponse, jurusan)
@@ -62,7 +62,7 @@ export class JurusanService {
         if (!user || !user.token) {
             throw new HttpException("Unauthorized", 401);
         }
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const jurusan = await this.prismaService.jurusan.findMany();
@@ -83,7 +83,7 @@ export class JurusanService {
         if (!jurusan) {
             throw new HttpException("Jurusan not found", 404)
         }
-        if (![1, 4].includes(user.id_role)) {
+        if (![1, 2].includes(user.id_role)) {
             throw new HttpException("Forbidden", 403)
         }
         const updatePrismaData = {
@@ -109,7 +109,7 @@ export class JurusanService {
             if (!jurusan) {
                 throw new HttpException("Jurusan not found", 404)
             }
-            if (![1, 4].includes(user.id_role)) {
+            if (![1, 2].includes(user.id_role)) {
                 throw new HttpException("Forbidden", 403)
             }
              jurusan = await this.prismaService.jurusan.delete({

@@ -41,7 +41,7 @@ export class CreateSiswaRequest{
     alamat: string;
     rombel: number;
     jenis_kelamin:'laki-laki' | 'perempuan';
-    image: string
+    image?: string
 }
 
 export class UpdateSiswaRequest {

@@ -17,5 +17,6 @@ export class LoginUsersRequest {
 }
 
 export class UpdateUserRequst {
+    id_role?: number 
     password?: string
 }

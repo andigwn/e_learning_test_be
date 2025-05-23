@@ -15,7 +15,7 @@ export class AdminResponse {
     tempat: string;
     @Transform(({ value }) => value.toISOString().split('T')[0])
     tanggal_lahir: Date;
-    image: string
+    image?: string
 }
 
 export class CreateAdminRequest {
@@ -31,7 +31,7 @@ export class CreateAdminRequest {
     status_pegawai: string
     tempat: string;
     tanggal_lahir: string;
-    image: string
+    image?: string
 }
 export class UpdateAdminRequest {
     id_admin?: number;

@@ -1,5 +1,5 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
-import { Admin, Users } from '@prisma/client';
+import { Users } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationSerivice } from 'src/common/validation.service';
@@ -47,16 +47,11 @@ export class MapelService {
     async get(user: Users, mapelId: number): Promise<MapelResponse>{
         this.logger.debug(`MapelService.get(${JSON.stringify(user)} ${JSON.stringify(mapelId)})`);
         const mapel = await this.checkMapelMustExists(mapelId)
-        if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         return plainToInstance(MapelResponse, mapel);
     }
     async getAllMapel(user: Users): Promise<MapelResponse[]> {
         this.logger.debug(`MapelService.getAllMapel(${JSON.stringify(user)})`);
-        if (!user || !user.token) {
-            throw new HttpException("Unauthorized", 401);
-        }
         
         const mapel = await this.prismaService.mataPelajaran.findMany();
         if (!mapel || mapel.length === 0) {
@@ -68,9 +63,6 @@ export class MapelService {
         this.logger.debug(`MapelService.update(${JSON.stringify(user)} ${JSON.stringify(request)})`)
         const updateRequest = await this.validationService.validate(MapelValidation.UPDATE,request)
         let mapel = await this.checkMapelMustExists(updateRequest.id_mapel)
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
         const updateData = {
             ...updateRequest
         }
@@ -87,10 +79,9 @@ export class MapelService {
         return plainToInstance(MapelResponse, mapel)
     }
     async remove(user: Users, mapelId: number): Promise<MapelResponse>{
+        this.logger.debug(`MapelService.update(${JSON.stringify(user)} ${JSON.stringify(mapelId)})`)
         await this.checkMapelMustExists(mapelId)
-        if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         const mapel = await this.prismaService.mataPelajaran.delete({
             where:{
                 id_mapel: mapelId

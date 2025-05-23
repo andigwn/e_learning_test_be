@@ -23,7 +23,7 @@ export class SiswaValidation {
       alamat: z.string().min(1).max(500),
       rombel: z.number().int(),
       jenis_kelamin: z.enum(['laki-laki', 'perempuan']),
-      image: z.string().min(1).max(255),
+      image: z.string().min(1).max(255).optional(),
     });
   
     static readonly UPDATE: ZodType = z.object({

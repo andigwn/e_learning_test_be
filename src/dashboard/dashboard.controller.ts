@@ -7,7 +7,7 @@ import { RolesGuard } from '../common/roles.guard';
 @UseGuards( RolesGuard)
 export class DashboardController {
   @Get('/superadmin')
-  @Roles(4)
+  @Roles([4])
   getSuperAdminDashboard() {
     return { 
       menu: ['Manajemen User', 'Manajemen Admin', 'Data Jurusan', 'Data Kelas', 'Log Aktivitas'],
@@ -15,7 +15,7 @@ export class DashboardController {
     };
   }
   @Get('/admin')
-  @Roles(1, 4)
+  @Roles([1, 4])
   getAdminDashboard() {
     return { 
       menu: ['Manajemen User', 'Data Jurusan', 'Data Kelas', 'Log Aktivitas'],
@@ -24,7 +24,7 @@ export class DashboardController {
   }
 
   @Get('/guru')
-  @Roles(2, 4)
+  @Roles([2, 4])
   getGuruDashboard() {
     return { 
       menu: ['Buat Materi', 'Buat Tugas', 'Lihat Nilai', 'Absensi'],
@@ -33,7 +33,7 @@ export class DashboardController {
   }
 
   @Get('/siswa')
-  @Roles(3, 4)
+  @Roles([3, 4])
   getSiswaDashboard() {
     return { 
       menu: ['Materi Pelajaran', 'Tugas', 'Nilai', 'Diskusi'],

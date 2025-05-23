@@ -1,19 +1,22 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { SiswaService } from './siswa.service';
 import { Auth } from 'src/common/auth.decorator';
 import { Users } from '@prisma/client';
 import { CreateSiswaRequest, SiswaResponse, UpdateSiswaRequest,  } from 'src/model/siswa.model';
 import { WebResponse } from 'src/model/web.model';
 import { Roles } from 'src/common/roles.decorator';
+import { RolesGuard } from 'src/common/roles.guard';
+import { JwtAuthGuard } from 'src/common/jwt_auth.guard';
 
 @Controller('/api/siswa')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class SiswaController {
     constructor(private siswaService: SiswaService){}
     @Get()
     @HttpCode(200)
-    @Roles(1,2, 4)
+    @Roles([1,2])
     async getAllSiswa(
-        @Auth(['superadmin','admin','siswa']) user: Users
+        @Auth() user: Users
     ):Promise<WebResponse<SiswaResponse[]>> {
         const result = await this.siswaService.getAllSiswa(user)
         return {
@@ -23,9 +26,9 @@ export class SiswaController {
     }
     @Get('/current')
     @HttpCode(200)
-    @Roles(1,2,4)
+    @Roles([1,2,4])
     async getSiswaCurrent(
-        @Auth(['superadmin','admin','siswa']) user: Users
+        @Auth() user: Users
     ):Promise<WebResponse<SiswaResponse[]>> {
         const result = await this.siswaService.getSiswaCurrent(user)
         return {
@@ -36,9 +39,9 @@ export class SiswaController {
 
     @Post('/create')
     @HttpCode(200)
-    @Roles(1, 2)
+    @Roles([1, 2])
     async create(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Body() request: CreateSiswaRequest
     ):Promise<WebResponse<SiswaResponse>> {
         const result = await this.siswaService.create(user, request)
@@ -49,9 +52,9 @@ export class SiswaController {
     }
     @Get('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 2, 4)
+    @Roles([1, 2, 4])
     async get(
-        @Auth(['superadmin','admin', 'siswa']) user: Users,
+        @Auth() user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number
     ):Promise<WebResponse<SiswaResponse>> {
         const result = await this.siswaService.get(user, siswaId)
@@ -62,9 +65,9 @@ export class SiswaController {
     }
     @Put('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 2)
+    @Roles([1, 2])
     async update(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number,
         @Body() request: UpdateSiswaRequest
     ):Promise<WebResponse<SiswaResponse>> {
@@ -77,9 +80,9 @@ export class SiswaController {
     }
     @Delete('/:siswaId')
     @HttpCode(200)
-    @Roles(1, 2)
+    @Roles([1, 2])
     async remove(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Param('siswaId', ParseIntPipe) siswaId: number
     ):Promise<WebResponse<boolean>> {
         await this.siswaService.remove(user, siswaId)

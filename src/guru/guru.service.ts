@@ -26,9 +26,7 @@ export class GuruService {
         if (totalGuruWithSame !== 0) {
             throw new HttpException("Nama Guru Already Exist", 400)
         }
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         const prismaData = {
             ...createRequest,
             jenis_kelamin: request.jenis_kelamin === 'laki-laki' ? 'PRIA' : 'PEREMPUAN',
@@ -53,9 +51,7 @@ export class GuruService {
     }
     async get(user: Users, guruId:number): Promise<GuruResponse>{
         this.logger.debug(`GuruService.get(${JSON.stringify(user)} ${guruId})`)
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         const guru = await this.prismaService.guru.findFirst({
             where:{
                 id_guru: guruId,
@@ -69,9 +65,7 @@ export class GuruService {
     }
     async getAllGuru(user: Users): Promise<GuruResponse[]>{
         this.logger.debug(`GuruService.getAllGuru(${JSON.stringify(user)})`)
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         const guru = await this.prismaService.guru.findMany({})
         if (!guru || guru.length === 0) {
             throw new HttpException("Guru not found", 404)
@@ -92,9 +86,7 @@ export class GuruService {
     }
     async update(user: Users, request: UpdateGuruRequest): Promise<GuruResponse>{
         this.logger.debug(`GuruService.update(${JSON.stringify(user)} ${JSON.stringify(request)}`)
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         const updateRequest = await this.validationService.validate(GuruValidation.UPDATE, request)
         let guru = await this.checkGuruMustExists(updateRequest.id_guru)
         const updateData = {
@@ -117,9 +109,7 @@ export class GuruService {
     }
     async remove(user: Users, guruId:number): Promise<GuruResponse>{
         this.logger.debug(`GuruService.remove(${JSON.stringify(user)} ${guruId}`)
-        if (![1,2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+        
         await this.checkGuruMustExists(guruId)
         const guru = await this.prismaService.guru.delete({
             where: {

@@ -26,23 +26,13 @@ export class SiswaService {
             id_users: user.id_users,
             tanggal_lahir: new Date(request.tanggal_lahir)
           };
-          if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
+          
     
         const siswa = await this.prismaService.siswa.create({
             data: prismaData,
             include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
-            },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
-            }
+            jurusan: true,
+            ruangan: true
         }
         });
         console.log(siswa)
@@ -55,16 +45,8 @@ export class SiswaService {
                 id_siswa: siswaId,
             },
             include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
-            },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
-            }
+            jurusan: true,
+            ruangan: true
         }
         });
         if (!siswa) {
@@ -78,24 +60,19 @@ export class SiswaService {
         
 
     // Fetch siswa by id_siswa and id_users
-    const siswa = await this.prismaService.siswa.findFirst({
-        where: {
-            id_siswa: siswaId,
-            id_users: user.id_users
-        },
-        include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
+        const siswa = await this.prismaService.siswa.findFirst({
+            where: {
+                id_siswa: siswaId,
+                id_users: user.id_users
             },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
+            include: {
+                jurusan: true,
+                ruangan: true
             }
+        });
+        if (!siswa) {
+            throw new HttpException("Siswa not found", 404)
         }
-    });
 
         return plainToInstance (SiswaResponse, siswa)
     }
@@ -103,24 +80,10 @@ export class SiswaService {
         this.logger.info(`SiswaService.get(${JSON.stringify(user)}`)
         const siswa = await this.prismaService.siswa.findMany({
             include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
-            },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
-            }
+            jurusan: true,
+            ruangan: true
         }
         });
-        if (!user || !user.token) {
-            throw new HttpException("Unauthorized", 401);
-        }
-        if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
         if (!siswa || siswa.length === 0) {
             throw new HttpException("Siswa not found", 404)
         }
@@ -133,21 +96,10 @@ export class SiswaService {
                 id_users: user.id_users
             },
             include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
-            },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
-            }
+            jurusan: true,
+            ruangan: true
         }
         });
-        if (!user || !user.token) {
-            throw new HttpException("Unauthorized", 401);
-        }
         if (!siswa || siswa.length === 0) {
             throw new HttpException("Siswa not found", 404)
         }
@@ -157,9 +109,6 @@ export class SiswaService {
         this.logger.debug(`SiswaService.update(${JSON.stringify(user)}, ${JSON.stringify(request)})`)
         const updateRequest = await this.validationService.validate(SiswaValidation.UPDATE, request)
         let siswa = await this.chechkSiswaMustExists(updateRequest.id_siswa)
-        if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
         const updateData = {
             ...updateRequest,
             ...(request.tanggal_lahir && { 
@@ -173,25 +122,15 @@ export class SiswaService {
             where: { id_siswa: siswa.id_siswa },
             data: updateData,
             include: {
-            jurusan: {
-                select: {
-                    nama_jurusan: true
-                    }
-            },
-            ruangan: {
-                select: {
-                    nama_ruangan: true
-                }
-            }
+            jurusan: true,
+            ruangan: true
         }
         });
         return plainToInstance(SiswaResponse, siswa)
     }
     async remove(user: Users, siswaId: number): Promise<SiswaResponse> {
+        this.logger.debug(`SiswaService.remove(${JSON.stringify(user)}, ${JSON.stringify(siswaId)}`)
         await this.chechkSiswaMustExists(siswaId);
-        if (![1, 2].includes(user.id_role)) {
-            throw new HttpException("Forbidden", 403)
-        }
         const siswa = await this.prismaService.siswa.delete({
             where:{
                 id_siswa : siswaId

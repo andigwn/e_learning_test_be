@@ -173,18 +173,18 @@ enum Hari {
 }
 
 enum Tipe {
-  MENGAJAR @map("mengajar")
-  PELAJARAN @map("pelajaran")
+  Mengajar @map("Mengajar")
+  Pelajaran @map("Pelajaran")
 }
 
 enum Semester {
-  GANJIL @map("Ganjil")
-  GENAP @map("Genap")
+  Ganjil @map("Ganjil")
+  Genap @map("Genap")
 }
 
 enum Status {
-  AKTIF @map("aktif")
-  NONAKTIF @map("nonaktif")
+  Aktif @map("Aktif")
+  Nonaktif @map("Nonaktif")
 }
 
 model Jadwal {
@@ -196,8 +196,8 @@ model Jadwal {
   id_ruangan Int
   hari Hari
   tipe Tipe
-  jam_mulai DateTime @db.Time
-  jam_selesai DateTime @db.Time
+  jam_mulai String @db.VarChar(11)
+  jam_selesai String @db.VarChar(11)
   semester Semester
   tahun_ajaran String @db.VarChar(9)
   status Status

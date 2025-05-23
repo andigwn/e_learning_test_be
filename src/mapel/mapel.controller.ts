@@ -1,12 +1,15 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { MapelService } from './mapel.service';
 import { Roles } from 'src/common/roles.decorator';
 import { Auth } from 'src/common/auth.decorator';
 import { Users } from '@prisma/client';
 import { MapelCreateRequest, MapelResponse, MapelUpdateRequest } from 'src/model/mapel.model';
 import { WebResponse } from 'src/model/web.model';
+import { RolesGuard } from 'src/common/roles.guard';
+import { JwtAuthGuard } from 'src/common/jwt_auth.guard';
 
 @Controller('/api/mapel')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MapelController {
     constructor(
         private  mapelService: MapelService
@@ -14,9 +17,9 @@ export class MapelController {
 
     @Post('/create')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async create(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Body() request: MapelCreateRequest,
     ): Promise<WebResponse<MapelResponse>>{
         const result = await this.mapelService.create(user, request);
@@ -27,9 +30,9 @@ export class MapelController {
     }
     @Get('/:mapelId')
     @HttpCode(200)
-    @Roles(1,2,4)
+    @Roles([1,2,4])
     async get(
-        @Auth(['superadmin','admin','siswa']) user: Users,
+        @Auth() user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number
     ):Promise<WebResponse<MapelResponse>>{
         
@@ -41,9 +44,9 @@ export class MapelController {
     }
     @Get()
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async getAllMapel(
-        @Auth(['superadmin','admin']) user: Users
+        @Auth() user: Users
     ): Promise<WebResponse<MapelResponse[]>>{
         const result = await this.mapelService.getAllMapel(user)
         return {
@@ -53,9 +56,9 @@ export class MapelController {
     }
     @Put('/:mapelId')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async update(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number,
         @Body() request: MapelUpdateRequest,
     ): Promise<WebResponse<MapelResponse>>{
@@ -68,9 +71,9 @@ export class MapelController {
     }
     @Delete('/:mapelId')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async remove(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Param('mapelId', ParseIntPipe) mapelId: number
     ): Promise<WebResponse<boolean>>{
         await this.mapelService.remove(user, mapelId)

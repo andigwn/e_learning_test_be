@@ -1,22 +1,48 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { WebResponse } from 'src/model/web.model';
 import { AdminResponse, CreateAdminRequest, UpdateAdminRequest } from 'src/model/admin.model';
 import { Auth } from 'src/common/auth.decorator';
 import { Users } from '@prisma/client';
 import { Roles } from 'src/common/roles.decorator';
+import { JwtAuthGuard } from 'src/common/jwt_auth.guard';
+import { RolesGuard } from 'src/common/roles.guard';
 
 @Controller('/api/admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class AdminController {
     constructor(
         private adminService: AdminService
     ){}
-
+    @Get()
+    @HttpCode(200)
+    @Roles([1,2])
+    async getAllAdmin(
+        @Auth() user: Users
+    ): Promise<WebResponse<AdminResponse[]>>{
+        const result = await this.adminService.getAllAdmin(user)
+        return{
+            data: result,
+            message: 'Get All Admin Successfully',
+        }
+    }
+    @Get('/current')
+    @HttpCode(200)
+    @Roles([1,2])
+    async getAdminCurrent(
+        @Auth() user: Users
+    ): Promise<WebResponse<AdminResponse[]>>{
+        const result = await this.adminService.getAdminCurrent(user)
+        return{
+            data: result,
+            message: 'Get Admin Successfully',
+        }
+    }
     @Post('/create')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async create(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Body() request: CreateAdminRequest
     ): Promise<WebResponse<AdminResponse>>{
         const result = await this.adminService.create(user,request)
@@ -27,9 +53,9 @@ export class AdminController {
     }
     @Get('/:adminId')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async get(
-        @Auth(['superadmin','admin']) user: Users,
+        @Auth() user: Users,
         @Param('adminId',ParseIntPipe) adminId: number
     ):Promise<WebResponse<AdminResponse>>{
         const result = await this.adminService.get(user,adminId)
@@ -38,35 +64,11 @@ export class AdminController {
             message: 'Get Admin Successfully',
             }
     }
-    @Get()
-    @HttpCode(200)
-    @Roles(1,2)
-    async getAllAdmin(
-        @Auth(['superadmin','admin']) user: Users
-    ): Promise<WebResponse<AdminResponse[]>>{
-        const result = await this.adminService.getAllAdmin(user)
-        return{
-            data: result,
-            message: 'Get All Admin Successfully',
-        }
-    }
-    @Get('/current')
-    @HttpCode(200)
-    @Roles(1,2)
-    async getAdminCurrent(
-        @Auth(['superadmin','admin']) user: Users
-    ): Promise<WebResponse<AdminResponse[]>>{
-        const result = await this.adminService.getAdminCurrent(user)
-        return{
-            data: result,
-            message: 'Get Admin Successfully',
-        }
-    }
     @Put('/:adminId')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async update(
-        @Auth(['superadmin','admin',]) user: Users,
+        @Auth() user: Users,
         @Param('adminId', ParseIntPipe) adminId: number,
         @Body() request: UpdateAdminRequest
     ): Promise<WebResponse<AdminResponse>>{
@@ -79,9 +81,9 @@ export class AdminController {
     }
     @Delete('/:adminId')
     @HttpCode(200)
-    @Roles(1,2)
+    @Roles([1,2])
     async delete(
-        @Auth(['superadmin','admin',]) user: Users,
+        @Auth() user: Users,
         @Param('adminId', ParseIntPipe) adminId: number
     ): Promise<WebResponse<boolean>>{
         await this.adminService.remove(user, adminId)

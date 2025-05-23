@@ -18,7 +18,7 @@ export class AdminValidation{
         status_pegawai: z.string().max(100),
         tempat: z.string(),
         tanggal_lahir: dateSchema,
-        image: z.string()
+        image: z.string().optional()
     });
      static readonly UPDATE: ZodType = z.object({
         id_admin: z.number().int().optional(),

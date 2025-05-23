@@ -9,9 +9,12 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1];
-
+    const user = request.user
+    if (user) {
+      return user;
+    }
     if (!token) {
-      throw new UnauthorizedException('Token tidak ditemukan');
+      throw new UnauthorizedException('Unauthorize');
     }
 
     try {
@@ -19,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
       request.user = payload; // Simpan payload di request.user
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Token tidak valid');
+      throw new UnauthorizedException('Unauthorize');
     }
   }
 }

@@ -1,5 +1,4 @@
-// src/common/roles.decorator.ts
-import { SetMetadata } from '@nestjs/common';
 
-export const ROLES_KEY = 'roles'; // Key untuk metadata
-export const Roles = (...roles: number[]) => SetMetadata(ROLES_KEY, roles);
+import { Reflector } from '@nestjs/core';
+
+export const Roles = Reflector.createDecorator<number[]>();
